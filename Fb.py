@@ -1,13 +1,13 @@
 import os,sys
 from flask import Flask ,request
+from witt import wit_response
 from pymessenger import Bot
 
 app = Flask(__name__)
-
+# Page token
 Page_token = "EAAQI1W6WkPABABBUcZChoQN461CZBesaadZBZBUoLNrv0KjEWNjFxh5kOWhgGKrZAVhQMczmnh1tDOtQLjDX3M8WgWuEAfAVU4ZCCffxInTYnkdQXFKuH9QJlw2BNRdhlGHQOgqS6SEZA7Qjrsr2IbhbhYfhzZCSP4fiEvAqtZCOveCu4122vq8kk"
 
 Prometheus = Bot(Page_token)
-
 @app.route('/', methods=['GET'])
 def verify():
 	# Webhook verification
@@ -27,7 +27,6 @@ def webhook():
             for messegeevent in entry['messaging']:
 
                 senderid = messegeevent['sender']['id']
-                recipientid = messegeevent['recipient']['id']
 
                 if messegeevent.get('message'):
                     if 'text' in messegeevent['message']:
@@ -35,7 +34,19 @@ def webhook():
                     else:
                         messagetext = 'Empty'
 
-                    reply = messagetext
+                    reply = None
+
+                    entity , value = wit_response(messagetext)
+
+                    if entity == 'location':
+                        reply = "Oh! {0} a nice place.".format(str(value))
+                    elif entity == 'greetings':
+                        reply = "Hi There! how can i help you"
+                    elif entity == "information":
+                        reply = "Sir this is a meme page!"
+                    else:
+                        reply = "Sorry! I didn't recieve anything"
+
                     Prometheus.send_text_message(senderid, reply)
     return "ok", 200
 
