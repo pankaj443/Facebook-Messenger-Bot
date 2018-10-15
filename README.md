@@ -29,5 +29,5 @@
 
 > Change your call back URL in webhook section and save settings.
 
-> Enter the code and Run!
+> Enter the code and Run! :)
 ----------------------------------------------------------------------------------------
